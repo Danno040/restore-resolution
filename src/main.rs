@@ -1,6 +1,32 @@
 use std::ptr;
 
-use core_graphics::display::{CGDisplay, CGDisplayMode, CGConfigureOption};
+use core_graphics::{display::{CGDisplay, CGDisplayMode, CGConfigureOption}, base::CGError};
+
+fn print_error_type(error: CGError) {
+    if error == 1000 {
+        println!("A general failure occurred.: https://developer.apple.com/documentation/coregraphics/cgerror/failure")
+    } else if error == 1001 {
+        println!("One or more of the parameters passed to a function are invalid. Check for NULL pointers.: https://developer.apple.com/documentation/coregraphics/cgerror/illegalargument")
+    } else if error == 1004 {
+        println!("The requested operation is inappropriate for the parameters passed in, or the current system state.: https://developer.apple.com/documentation/coregraphics/cgerror/cannotcomplete")
+    } else if error == 1002 {
+        println!("The parameter representing a connection to the window server is invalid.")
+    } else if error == 1003 {
+        println!("The CPSProcessSerNum or context identifier parameter is not valid.")
+    } else if error == 1010 {
+        println!("The requested operation is not valid for the parameters passed in, or the current system state.")
+    } else if error == 1011 {
+        println!("The requested operation could not be completed as the indicated resources were not found.")
+    } else if error == 1006 {
+        println!("Return value from obsolete function stubs present for binary compatibility, but not typically called.")
+    } else if error == 1007 {
+        println!("A parameter passed in has a value that is inappropriate, or which does not map to a useful operation or value.")
+    } else if error == 1008 {
+        println!("A data type or token was encountered that did not match the expected type or token.")
+    } else {
+        println!("Unknown error")
+    } 
+}
 
 fn main() {
     println!("Hello, world!");
@@ -53,8 +79,9 @@ fn main() {
         let mut desired_display_mode = None;
         for possible_mode in all_display_modes.iter() {
             if possible_mode.width() == 1920u64 && possible_mode.height() == 1080u64 && possible_mode.bit_depth() == 32usize && possible_mode.refresh_rate() == 60f64 {
-                println!("Found desired display mode.");
+                println!("Found desired display mode. {}", possible_mode.mode_id());
                 desired_display_mode = Some(possible_mode.clone());
+                break;
             }
         }
         if desired_display_mode.is_none() {
@@ -62,18 +89,22 @@ fn main() {
             return;
         }
 
-        println!("Display mode is incorrect. Resetting to 1920x1080x32@60.");
+        println!("Display mode is incorrect ({}x{}x{}@{}). Resetting to 1920x1080x32@60.", display_mode.width(), display_mode.height(), display_mode.bit_depth(), display_mode.refresh_rate());
         let config_ref_result = display.begin_configuration();
         if config_ref_result.is_err() {
+            println!("Failed to being config");
             return;
         }
         let config_ref = config_ref_result.unwrap();
         let mut configure_result = display.configure_display_with_display_mode(&config_ref, &desired_display_mode.unwrap());
         if configure_result.is_err() {
+            println!("Failed to configure mode");
             return;
         }
         configure_result = display.complete_configuration(&config_ref, CGConfigureOption::ConfigurePermanently);
         if configure_result.is_err() {
+            println!("Failed to complete:");
+            print_error_type(configure_result.unwrap_err());
             return;
         }
     }
