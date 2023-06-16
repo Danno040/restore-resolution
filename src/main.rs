@@ -3,29 +3,19 @@ use std::ptr;
 use core_graphics::{display::{CGDisplay, CGDisplayMode, CGConfigureOption}, base::CGError};
 
 fn print_error_type(error: CGError) {
-    if error == 1000 {
-        println!("A general failure occurred.: https://developer.apple.com/documentation/coregraphics/cgerror/failure")
-    } else if error == 1001 {
-        println!("One or more of the parameters passed to a function are invalid. Check for NULL pointers.: https://developer.apple.com/documentation/coregraphics/cgerror/illegalargument")
-    } else if error == 1004 {
-        println!("The requested operation is inappropriate for the parameters passed in, or the current system state.: https://developer.apple.com/documentation/coregraphics/cgerror/cannotcomplete")
-    } else if error == 1002 {
-        println!("The parameter representing a connection to the window server is invalid.")
-    } else if error == 1003 {
-        println!("The CPSProcessSerNum or context identifier parameter is not valid.")
-    } else if error == 1010 {
-        println!("The requested operation is not valid for the parameters passed in, or the current system state.")
-    } else if error == 1011 {
-        println!("The requested operation could not be completed as the indicated resources were not found.")
-    } else if error == 1006 {
-        println!("Return value from obsolete function stubs present for binary compatibility, but not typically called.")
-    } else if error == 1007 {
-        println!("A parameter passed in has a value that is inappropriate, or which does not map to a useful operation or value.")
-    } else if error == 1008 {
-        println!("A data type or token was encountered that did not match the expected type or token.")
-    } else {
-        println!("Unknown error")
-    } 
+    match error {
+        1000 => println!("A general failure occurred.: https://developer.apple.com/documentation/coregraphics/cgerror/failure"),
+        1001 => println!("One or more of the parameters passed to a function are invalid. Check for NULL pointers.: https://developer.apple.com/documentation/coregraphics/cgerror/illegalargument"),
+        1004 => println!("The requested operation is inappropriate for the parameters passed in, or the current system state.: https://developer.apple.com/documentation/coregraphics/cgerror/cannotcomplete"),
+        1002 => println!("The parameter representing a connection to the window server is invalid."),
+        1003 => println!("The CPSProcessSerNum or context identifier parameter is not valid."),
+        1010 => println!("The requested operation is not valid for the parameters passed in, or the current system state."),
+        1011 => println!("The requested operation could not be completed as the indicated resources were not found."),
+        1006 => println!("Return value from obsolete function stubs present for binary compatibility, but not typically called."),
+        1007 => println!("A parameter passed in has a value that is inappropriate, or which does not map to a useful operation or value."),
+        1008 => println!("A data type or token was encountered that did not match the expected type or token."),
+        _ => println!("Unknown error"),
+    }
 }
 
 fn main() {
